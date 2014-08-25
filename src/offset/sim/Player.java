@@ -16,6 +16,6 @@ public abstract class Player {
     
     // Return: the next position
     // my position: pipers[id-1]
-    public abstract movePair move(Point[] grid, Pair pr); // positions of the rats
+    public abstract movePair move(Point[] grid, Pair pr); 
 
 }

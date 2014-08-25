@@ -8,7 +8,7 @@ public class Point {
     public int value;
     public int owner;
 
-    public Point() { x = 0; y = 0; }
+    public Point() { x = 0; y = 0; value =1; owner = -1;}
 
     public Point(int xx, int yy, int va, int ow) {
         x = xx;
@@ -17,12 +17,12 @@ public class Point {
         this.owner = ow;
     }
 
-    public Point(Point o) {
+  /*  public Point(Point o) {
         this.x = o.x;
         this.y = o.y;
-    }
+    }*/
 
-    public boolean equals(Point o) {
+  /*  public boolean equals(Point o) {
         return o.x == x && o.y == y;
-    }
+    }*/
 }

@@ -133,17 +133,7 @@ public class Offset
 	}
 
 
-  /*  static Player[] loadPlayers(String group, int npipers) {
-        Player[] players = new Player[npipers];
-        for (int i = 0; i < npipers; ++i) {
-            Player p = loadPlayer(group);
-            p.id = i + 1; // set the piper id
-            players[i] = p;
-        }
-        return players;
-    }
-*/
-    // generate a random position on the given side
+    // generate a random Pair given a integer d
     static Pair randomPair(int d) {
         Pair pr = new Pair();
         // generate [0-50)
@@ -153,9 +143,7 @@ public class Offset
         return pr;
     }
 
-    // compute Euclidean distance between two points
-
-
+    
     void playgui() {
         SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -310,17 +298,7 @@ public class Offset
             }
             
             }
-            // draw 2D line
-            //g2.draw(new Line2D.Double(0.5 * dimension * s + ox, 0 + oy,
-              //                        0.5 * dimension * s + ox, OPEN_LEFT * s + oy));
-
-            //g2.draw(new Line2D.Double(0.5 * dimension * s + ox, OPEN_RIGHT * s + oy,
-              //                        0.5 * dimension * s + ox, dimension * s + oy));
-
-            // draw pipers
-            //drawValues(g2);
             for (int i = 0; i < size*size; ++i) {
-           // drawPoint(g2, pointers[i]);
             	drawPoint(g2, grid[i]);
             }
         }
@@ -383,7 +361,7 @@ public class Offset
     	if (Math.abs(target.x-src.x)==Math.abs(pr.x) && Math.abs(target.y-src.y)==Math.abs(pr.y)) {
     		rightposition = true;
     	}
-    	if (Math.abs(target.x-src.x)==Math.abs(pr.x) && Math.abs(target.y-src.y)==Math.abs(pr.y)) {
+    	if (Math.abs(target.x-src.x)==Math.abs(pr.y) && Math.abs(target.y-src.y)==Math.abs(pr.x)) {
     		rightposition = true;
     	}
         if (rightposition && (src.owner==id || src.owner<0) && (target.owner ==id || target.owner<0) && src.value == target.value && src.value>0) {
@@ -396,13 +374,6 @@ public class Offset
 
     // detect whether the player has achieved the requirement
     boolean endOfGame() {
-       // if (!mode) {
-            // simple mode
-        /*    for (int i = 0; i < nrats; ++i) {
-                if (getSide(rats[i]) == 1)
-                    return false;
-            }
-            return true;*/
             if (counter >=2) {
             	System.out.println("end of the game!");
             	return true;
@@ -440,8 +411,6 @@ public class Offset
         	next = player1.move(grid, p1);
         	currentPr = p1;
         	currentplayer =1;
-        	
-        	
         }
         //System.out.println(next.move);
         if (next.move) {
@@ -457,38 +426,6 @@ public class Offset
         	System.out.printf("%d player no move", currentplayer);
         	counter = counter+1;
         }
-        // move the player dogs
-     //   Point[] next = new Point[npipers];
-     /*   for (int d = 0; d < npipers; ++d) {
-            Point[] pipercopy = copyPointArray(pipers);
-
-            try {
-                next[d] = players[d].move(pipercopy, rats);
-            } catch (Exception e) {
-                e.printStackTrace();
-                System.err.println("[ERROR] Player throws exception!!!!");
-                next[d] = pipers[d]; // let the dog stay
-            }
-
-            if (verbose) {
-                System.err.format("Piper %d moves from (%.2f,%.2f) to (%.2f,%.2f)\n", 
-                                  d+1, pipers[d].x, pipers[d].y, next[d].x, next[d].y);
-            }
-
-            // validate player move
-            if (!validateMove(pipers[d], next[d], d)) {
-                System.err.println("[ERROR] Invalid move, let the dog stay.");
-                // for testing purpose
-                // let's make the dog stay
-                next[d] = pipers[d];
-            }
-        }
-            
-        // move sheeps
-        moveRats();
-
-        // move dogs
-        pipers = next;*/
     }
 
     void play() {
@@ -515,50 +452,26 @@ public class Offset
     	   }
        }
     }
+   
    void pairPrint(movePair movepr) {
 	   System.out.printf("src is (%d, %d) = %d", movepr.x.x, movepr.x.y, movepr.x.value);
 	   System.out.printf("target is (%d, %d) = %d \n", movepr.y.x, movepr.y.y, movepr.y.value);
 	   
    }
 
-  /*  Piedpipers(Player[] players, int nrats)
-    {
-        this.players = players;
-        this.npipers = players.length;
-        this.nrats = nrats;
-        
-
-        // print config
-        System.err.println("##### Game config #####");
-        System.err.println("Pipers: " + players.length);
-        System.err.println("Rats: " + nrats);
-      //  System.err.println("Blacks: " + nblacks);
-        //System.err.println("Mode: " + mode);
-        System.err.println("##### end of config #####");
-    }
-*/
     
 	public static void main(String[] args) throws Exception
 	{
         // game parameters
         String group0 = null;
         String group1 = null;
-   //     int npipers = DEFAULT_PIPERS; // d
-     //   int nrats = DEFAULT_RATS; // S
         int d = 0;
-        
-
         if (args.length > 0)
              d = Integer.parseInt(args[0]);
         if (args.length > 1)
             group0 = args[1];
         if (args.length > 2)
             group1 = args[2];
-        //if (args.length > 3)
-          //  gui = Boolean.parseBoolean(args[3]);
-
-        // load players
-       // Player[] players = loadPlayers(group, npipers);
         
         // create game
         
@@ -566,6 +479,8 @@ public class Offset
         game.init();
         p0=randomPair(d);
         p1=randomPair(d);
+        System.out.printf("Pair 1 is (%d, %d)", p0.x, p0.y);
+        System.out.printf("Pair 2 is (%d, %d)", p1.x, p1.y);
         player0 = loadPlayer(group0, p0, 0);
         player1 = loadPlayer(group1, p1, 1);
         // init game
@@ -579,19 +494,6 @@ public class Offset
        // }
 
     }        
-
-    // players
-    Player[] players;
-    // dog positions
-    Point[] pipers;
-    // sheep positions
-    Point[] rats;
-    
-    // game config
-    int npipers;
-    int nrats;
-   // int nblacks;
-    //boolean mode;
 
     int tick = 0;
 
