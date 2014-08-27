@@ -7,6 +7,7 @@ public class Point {
     public int y;
     public int value;
     public int owner;
+    public boolean change;
 
     public Point() { x = 0; y = 0; value =1; owner = -1;}
 
@@ -15,6 +16,7 @@ public class Point {
         y = yy;
         this.value = va;
         this.owner = ow;
+        this.change = false;
     }
 
   /*  public Point(Point o) {

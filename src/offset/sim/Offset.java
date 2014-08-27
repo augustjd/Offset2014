@@ -304,6 +304,12 @@ public class Offset
         }
         
         public void drawPoint(Graphics2D g2, Point p) {
+        	StringBuilder sb = new StringBuilder();
+            sb.append("");
+            sb.append(p.value);
+            String strI = sb.toString();
+            double x_in = (dimension*s-ox)/size;
+            double y_in = (dimension*s-oy)/size;
         	if (p.owner == -1) {
                 g2.setPaint(Color.BLUE);
         	}
@@ -313,12 +319,13 @@ public class Offset
             else {
                 g2.setPaint(Color.GREEN);
             }
-            StringBuilder sb = new StringBuilder();
-            sb.append("");
-            sb.append(p.value);
-            String strI = sb.toString();
-            double x_in = (dimension*s-ox)/size;
-            double y_in = (dimension*s-oy)/size;
+        	if (p.change) {
+        		//System.out.println("haha, we should change background color now");
+        		g2.fillRect((int)(ox+p.x*x_in), (int)(oy+p.y*y_in), (int)(x_in), (int)(y_in));
+        		g2.setPaint(Color.WHITE);
+        		p.change = false;
+        	}
+            
          //   Ellipse2D e = new Ellipse2D.Double(p.x*s-PSIZE/2+ox, p.y*s-PSIZE/2+oy, PSIZE, PSIZE);
           //  g2.setStroke(stroke);
             //g2.draw(e);9
@@ -339,6 +346,8 @@ public class Offset
         src.value = 0;
         target.owner = playerID;
         src.owner = -1;
+        src.change = true;
+        target.change = true;
     	}
     }
     public int calculatescore(int id) {
@@ -353,7 +362,7 @@ public class Offset
     	return score;
     }
  
-    boolean validateMove(movePair movepr, Pair pr, int id) {
+    boolean validateMove(movePair movepr, Pair pr) {
     	
     	Point src = movepr.x;
     	Point target = movepr.y;
@@ -364,7 +373,7 @@ public class Offset
     	if (Math.abs(target.x-src.x)==Math.abs(pr.y) && Math.abs(target.y-src.y)==Math.abs(pr.x)) {
     		rightposition = true;
     	}
-        if (rightposition && (src.owner==id || src.owner<0) && (target.owner ==id || target.owner<0) && src.value == target.value && src.value>0) {
+        if (rightposition  && src.value == target.value && src.value>0) {
         	return true;
         }
         else {
@@ -414,7 +423,7 @@ public class Offset
         }
         //System.out.println(next.move);
         if (next.move) {
-        if (validateMove(next, currentPr, currentplayer)) {
+        if (validateMove(next, currentPr)) {
         	update(next, currentplayer);
         	pairPrint(next);
         }
@@ -479,6 +488,9 @@ public class Offset
         game.init();
         p0=randomPair(d);
         p1=randomPair(d);
+        while (p0.x==p1.x || p0.y == p1.x) {
+        	p1=randomPair(d);
+        }
         System.out.printf("Pair 1 is (%d, %d)", p0.x, p0.y);
         System.out.printf("Pair 2 is (%d, %d)", p1.x, p1.y);
         player0 = loadPlayer(group0, p0, 0);
