@@ -17,7 +17,7 @@ public class Player extends offset.sim.Player {
 
 	}
 
-	public movePair move(Point[] grid, Pair pr) {
+	public movePair move(Point[] grid, Pair pr, ArrayList<ArrayList> history) {
 		movePair movepr = new movePair();
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {

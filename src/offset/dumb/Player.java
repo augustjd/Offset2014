@@ -19,7 +19,8 @@ public class Player extends offset.sim.Player {
 
 	}
 
-	public movePair move(Point[] grid, Pair pr) {
+	public movePair move(Point[] grid, Pair pr, ArrayList<ArrayList> history) {
+		//System.out.println(history.size());
 		movePair movepr = new movePair();
 		for (int i = 0; i < size; i++) {
 			for (int j = 0; j < size; j++) {
@@ -81,7 +82,7 @@ boolean validateMove(movePair movepr, Pair pr) {
     	if (Math.abs(target.x-src.x)==Math.abs(pr.x) && Math.abs(target.y-src.y)==Math.abs(pr.y)) {
     		rightposition = true;
     	}
-    	if (Math.abs(target.x-src.x)==Math.abs(pr.x) && Math.abs(target.y-src.y)==Math.abs(pr.y)) {
+    	if (Math.abs(target.x-src.x)==Math.abs(pr.y) && Math.abs(target.y-src.y)==Math.abs(pr.x)) {
     		rightposition = true;
     	}
         if (rightposition && src.value == target.value && src.value >0) {

@@ -50,8 +50,9 @@ public class Offset
     
     static Pair p0;
     static Pair p1;
-    
-  
+    //static FileOutputStream out;
+    static PrintWriter writer;
+    static ArrayList<ArrayList> history = new ArrayList<ArrayList>();
     
 	// list files below a certain directory
 	// can filter those having a specific extension constraint
@@ -314,7 +315,7 @@ public class Offset
                 g2.setPaint(Color.BLUE);
         	}
             else if (p.owner == 0) {
-                g2.setPaint(Color.RED);
+                g2.setPaint(Color.magenta);
             }
             else {
                 g2.setPaint(Color.GREEN);
@@ -411,30 +412,42 @@ public class Offset
         
         
         if (tick % 2 == 1) {
-        	next = player0.move(grid, p0);
+        	next = player0.move(grid, p0, history);
         	currentPr = p0;
         	currentplayer = 0;
         	counter = 0;
         }
         else {
-        	next = player1.move(grid, p1);
+        	next = player1.move(grid, p1, history);
         	currentPr = p1;
         	currentplayer =1;
         }
         //System.out.println(next.move);
         if (next.move) {
         if (validateMove(next, currentPr)) {
+        	writer.printf("(%d, %b, (%d, %d), (%d, %d), %d)\n", currentplayer, next.move, next.x.x, next.x.y, next.y.x, next.y.y, next.x.value*2);
+        	writer.flush();
+        	ArrayList record = new ArrayList();
+        	record.add(currentplayer);
+        	record.add(next);
+        	history.add(record);
         	update(next, currentplayer);
-        	pairPrint(next);
+        	//pairPrint(next);
         }
         else {
         	System.out.println("[ERROR] Invalid move, let the player stay.");
         }
         }
         else {
-        	System.out.printf("%d player no move", currentplayer);
-        	counter = counter+1;
+        	if (nomove(currentPr)) {
+        		System.out.printf("%d player no move\n", currentplayer);
+        		counter = counter+1;
+        	}
+        	else {
+        		System.err.printf("Player %d still have valid movie, but it gives up", currentplayer);
+        	}
         }
+        
     }
 
     void play() {
@@ -467,13 +480,30 @@ public class Offset
 	   System.out.printf("target is (%d, %d) = %d \n", movepr.y.x, movepr.y.y, movepr.y.value);
 	   
    }
-
+   boolean nomove(Pair pr) {
+	   for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				for (int i_pr=0; i_pr<size; i_pr++) {
+				for (int j_pr=0; j_pr <size; j_pr++) {
+					movePair movepr = new movePair(false, grid[i*size+j], grid[size*i_pr+j_pr]);
+					//movepr.x = grid[i*size+j];
+				//	movepr.y = grid[size*i_pr+j_pr];
+					if (validateMove(movepr, pr)) {
+						return false;
+					}
+				}
+				}
+			}
+	   }
+	   return true;
+   }
     
 	public static void main(String[] args) throws Exception
 	{
         // game parameters
         String group0 = null;
         String group1 = null;
+        String output = null;
         int d = 0;
         if (args.length > 0)
              d = Integer.parseInt(args[0]);
@@ -481,9 +511,12 @@ public class Offset
             group0 = args[1];
         if (args.length > 2)
             group1 = args[2];
+        if (args.length >3)
+        	output = args[3];
         
         // create game
-        
+       
+		writer = new PrintWriter(output, "UTF-8");
         Offset game = new Offset();
         game.init();
         p0=randomPair(d);
@@ -504,7 +537,7 @@ public class Offset
        // else {
          //   game.play();
        // }
-
+       
     }        
 
     int tick = 0;

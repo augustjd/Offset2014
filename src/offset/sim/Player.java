@@ -1,5 +1,7 @@
 package offset.sim;
 
+import java.util.ArrayList;
+
 import offset.sim.Point;
 
 public abstract class Player {
@@ -16,6 +18,6 @@ public abstract class Player {
     
     // Return: the next position
     // my position: pipers[id-1]
-    public abstract movePair move(Point[] grid, Pair pr); 
+    public abstract movePair move(Point[] grid, Pair pr, ArrayList<ArrayList> history); 
 
 }
