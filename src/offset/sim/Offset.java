@@ -53,6 +53,8 @@ public class Offset
     //static FileOutputStream out;
     static PrintWriter writer;
     static ArrayList<ArrayList> history = new ArrayList<ArrayList>();
+    static boolean nomoveend = false;
+    static int nomoveid = 100;
     
 	// list files below a certain directory
 	// can filter those having a specific extension constraint
@@ -183,8 +185,14 @@ public class Offset
                 return false;
             }
            else if (endOfGame()) {
+        	   if (!nomoveend) {
                 label.setText("Finishes in " + tick + " ticks!");
                 label.setVisible(true);
+        	   }
+        	   else {
+        		   label.setText("Finishes in " + tick + " ticks!" + "Player " +nomoveid+ " Disqualified! ");
+                   label.setVisible(true);
+        	   }
                 // print success message
                 int scr0, scr1;
                 scr0 = calculatescore(0);
@@ -239,12 +247,12 @@ public class Offset
             label = new JLabel();
             label0 = new JLabel();
             label.setVisible(false);
-            label.setBounds(0, 60, 200, 50);
+            label.setBounds(0, 60, 350, 50);
             label.setFont(new Font("Arial", Font.PLAIN, 15));
 
             label0.setVisible(false);
-            label0.setBounds(250, 60, 500, 50);
-            label.setFont(new Font("Arial", Font.PLAIN, 15));
+            label0.setBounds(400, 60, 500, 50);
+            label0.setFont(new Font("Arial", Font.PLAIN, 15));
             
             field.setBounds(100, 100, FIELD_SIZE + 50, FIELD_SIZE + 50);
 
@@ -312,13 +320,13 @@ public class Offset
             double x_in = (dimension*s-ox)/size;
             double y_in = (dimension*s-oy)/size;
         	if (p.owner == -1) {
-                g2.setPaint(Color.BLUE);
+                g2.setPaint(Color.GREEN);
         	}
             else if (p.owner == 0) {
                 g2.setPaint(Color.magenta);
             }
             else {
-                g2.setPaint(Color.GREEN);
+                g2.setPaint(Color.BLUE);
             }
         	if (p.change) {
         		//System.out.println("haha, we should change background color now");
@@ -384,7 +392,7 @@ public class Offset
 
     // detect whether the player has achieved the requirement
     boolean endOfGame() {
-            if (counter >=2) {
+            if (counter >=2 || nomoveend) {
             	System.out.println("end of the game!");
             	return true;
             	
@@ -444,6 +452,8 @@ public class Offset
         		counter = counter+1;
         	}
         	else {
+        		nomoveend = true;
+        		nomoveid = currentplayer;
         		System.err.printf("Player %d still have valid movie, but it gives up", currentplayer);
         	}
         }
